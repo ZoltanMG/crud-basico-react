@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import uniqid from 'uniqid';
 
 const ListadoNombres = () => {
-
     const [nombre, setNombre] = useState('')
     const [listaNombres, setListaNombres] = useState([])
-
+    const [modoEdicion, setModoEdicion] = useState(false)
+    const [id, setId] = useState('')
 
     // - addNombre realiza lo siguiente:
     // evita que la pagina se actualice cuando se envia el formulario,
@@ -30,6 +30,22 @@ const ListadoNombres = () => {
         setListaNombres(nuevaArray)
     }
 
+    const editar = (item) => {
+        setModoEdicion(true)
+        setNombre(item.nombre)
+        setId(item.id)
+    }
+
+    const editarNombre = (e) => {
+        e.preventDefault()
+        const nuevoArray = listaNombres.map(item =>
+            item.id === id ? { id: id, nombre: nombre } : item
+        )
+        setListaNombres(nuevoArray)
+        setModoEdicion(false)
+        setNombre('')
+    }
+
     return (
         <div>
             <h2>Aplicación de CRUD básica.</h2>
@@ -47,14 +63,22 @@ const ListadoNombres = () => {
                                     >
                                         Eliminar
                                     </button>
+                                    <button
+                                        className="btn btn-info float-right"
+                                        onClick={() => { editar(item) }}
+                                    >
+                                        Editar
+                                    </button>
                                 </li>
                             )
                         }
                     </ul>
                 </div>
                 <div className="col">
-                    <h2>Formularios para añadir nombres</h2>
-                    <form onSubmit={(e) => addNombre(e)} className="form-group">
+                    <h2>
+                        {modoEdicion ? 'Actualizar nombre' : 'Formularios para añadir nombres'}
+                    </h2>
+                    <form onSubmit={modoEdicion ? editarNombre : addNombre} className="form-group">
                         <input
                             onChange={(e) => { setNombre(e.target.value) }}
                             className="form-control mb-3"
@@ -66,7 +90,7 @@ const ListadoNombres = () => {
                         <input
                             className="btn btn-info btn-block"
                             type="submit"
-                            value="Registrar nombre"
+                            value={modoEdicion ? 'Editar nombre' : 'Registrar nombre'}
                         />
                     </form>
                 </div>
