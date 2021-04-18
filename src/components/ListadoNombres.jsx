@@ -6,6 +6,7 @@ const ListadoNombres = () => {
     const [listaNombres, setListaNombres] = useState([])
     const [modoEdicion, setModoEdicion] = useState(false)
     const [id, setId] = useState('')
+    const [error, setError] = useState(null)
 
     // - addNombre realiza lo siguiente:
     // evita que la pagina se actualice cuando se envia el formulario,
@@ -14,12 +15,17 @@ const ListadoNombres = () => {
     // vacia el imputo del fomulario diligenciado previamente.
     const addNombre = (e) => {
         e.preventDefault()
+        if (!nombre.trim()){
+            setError('El campo nombre esta vacio.')
+            return
+        }
         const nuevoNombre = {
             id: uniqid(),
             nombre: nombre
         }
         setListaNombres([...listaNombres, nuevoNombre])
         setNombre('')
+        setError(null)
     }
 
     // - deleteNombre realiza:
@@ -85,7 +91,6 @@ const ListadoNombres = () => {
                             type="text"
                             placeholder="Nombre"
                             value={nombre}
-                            required
                         />
                         <input
                             className="btn btn-info btn-block"
@@ -93,6 +98,16 @@ const ListadoNombres = () => {
                             value={modoEdicion ? 'Editar nombre' : 'Registrar nombre'}
                         />
                     </form>
+                    {
+                        error != null ? (
+                            <div className="alert alert-danger">
+                                {error}
+                            </div>
+                        ):
+                        (
+                            <div></div>
+                        )
+                    }
                 </div>
             </div>
         </div>
